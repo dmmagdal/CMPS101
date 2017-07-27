@@ -1,20 +1,25 @@
-# Makefile for pa1 
+# Makefile for pa1 CMPS101
+# 
+# Compiles all .java files in current directory and creates executable jar file called Lex.
 
-JAVASRC		= List.java Node.java UndefinedCursorException.java Lex.java ListClient.java
-SOURCES		= makefile $(JAVASRC)
-MAINCLASS	= ListClient
-CLASSES		= List.class Node.class UndefinedCursorExceptio.java Lex.class ListClient.java 
-JARFILE		= Lex
+MAINCLASS	= Lex
+JAVAC		= javac
+JAVASRC		= $(wildcard *.java)
+SOURCES		= $(JAVASRC) makefile README
+CLASSES		= $(patsubst %.java, %.class, $(JAVASRC))
+JARCLASSES	= $(patsubst %.class, %*.class, $(CLASSES))
+JARFILE		= $(MAINCLASS)
 
 all: $(JARFILE)
 
 $(JARFILE): $(CLASSES)
 	echo Main-class: $(MAINCLASS) > Manifest
-	jar cvfm $(JARFILE) Manifest $(CLASSES)
+	jar cvfm $(JARFILE) Manifest $(JARCLASSES)
+	chmod +x $(JARFILE)
 	rm Manifest
 
-$(CLASSES): $(JAVASRC)
-	javac -Xlint $(JAVASRC)
+%.class: %.java
+	$(JAVAC) $<
 
-clean:
-	rm $(CLASSES) $(JARFILE)
+clean: 
+	rm -f *.class $(JARFILE)

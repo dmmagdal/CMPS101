@@ -1,7 +1,7 @@
 // List.java
 // Diego Magdaleno
 // dmmagdal
-// Creates a bidirectional integer linked list 
+// pa1: Creates a bidirectional integer linked list 
 
 public final class List{
 	private Node front;								// reference to the front of the list
@@ -194,13 +194,14 @@ public final class List{
 	@param takes an int which is the new data for the element to be inserted
 	@return returns nothing **/
 	public void insertBefore(int data){
-		if (!isEmpty() && index > 0){				// if the list isn't empty and the index is greater than zero
+		if (!isEmpty() && index >= 0 ){				// if the list isn't empty and the index is greater than zero
 			Node n = new Node(data);				// inistialize the new node
 			n.setPrev(cursor.prev);					// set the node's previous reference to the cursor's previous reference
 			n.setNext(cursor);						// set the node's next reference to the cursor
 			cursor.prev.setNext(n);					// set the next reference of the cursor's previous node to the new node
 			cursor.setPrev(n);						// set the cursor's previous reference to the new node
 			index++;
+			numItems++;								// increment the number of items
 		}
 	}
 
@@ -208,13 +209,14 @@ public final class List{
 	@param takes an int which is the new data for the element to be inserted
 	@return returns nothing **/
 	public void insertAfter(int data){
-		if (!isEmpty() && index > 0){				// if the list isn't empty and the index is greater than zero
+		if (!isEmpty() && index >= 0){				// if the list isn't empty and the index is greater than zero
 			Node n = new Node(data);				// inistialize the new node
 			n.setNext(cursor.next);					// set the node's next reference to the cursor's next reference
 			n.setPrev(cursor);						// set the node's previous reference to the cursor
 			cursor.next.setPrev(n);					// set the previous reference of the cursor's next node to the new node
 			cursor.setNext(n);						// set the cursor's next reference to the new node
 			index--;
+			numItems++;								// increment the number of items
 		}
 	}
 
@@ -223,8 +225,17 @@ public final class List{
 	@return returns nothing **/
 	public void deleteFront(){
 		if (!isEmpty()){							// if the list isn't empty
-			front = front.next;						// set the front to the next element and set the reference to the 
-			front.setPrev(null);					// previous node to null
+			if (front.getNext() == null){			// if the front is the only node in the list
+				front = null;						// set front and back equal to null
+				back = front;						
+				cursor = null;						// clear the cursor and its index
+				index = -1;
+			}
+			else{
+				front = front.next;					// set the front to the next element and set the reference to the 
+				front.setPrev(null);				// previous node to null
+			}
+			numItems--;								// decrement the number of items
 		}
 	}
 
@@ -233,8 +244,17 @@ public final class List{
 	@return returns nothing **/
 	public void deleteBack(){
 		if (!isEmpty()){							// if the list isn't empty
-			back = back.prev;						// set the back to the previous element and set the reference to the 
-			back.setNext(null);						// next node to null
+			if (back.getPrev() == null){			// if the back is the only node in the list
+				back = null;						// set back and front equal to null
+				front = back;
+				cursor = null;						// clear the cursor and its index
+				index = -1;
+			}
+			else {
+				back = back.prev;					// set the back to the previous element and set the reference to the 
+				back.setNext(null);					// next node to null
+			}
+			numItems--;								// decrement the number of items
 		}
 	}
 
@@ -243,10 +263,19 @@ public final class List{
 	@return returns nothing **/
 	public void delete(){
 		if (!isEmpty() && index >= 0){				// if the list isn't empty and the index is greater than or equal to zero
-			cursor.prev.setNext(cursor.next);		// set the reference to the next node of the node previous to the crusor to the next node after the cursor
-			cursor.next.setPrev(cursor.prev);		// set the reference to the previous node of the node next to the crusor to the previous node after the cursor
+			if (cursor.equals(getFront())){			// if the cursor is at the front of the list
+				cursor.next.setPrev(null);
+			}
+			else if (cursor.equals(getBack())){		// if the ucursor is at the back of the list
+				cursor.prev.setNext(null);
+			}
+			else {									// otherwise the cursor is in the middle of the list
+				cursor.prev.setNext(cursor.next);	// set the reference to the next node of the node previous to the crusor to the next node after the cursor
+				cursor.next.setPrev(cursor.prev);	// set the reference to the previous node of the node next to the crusor to the previous node after the cursor
+			}
 			cursor = null;							// clear the cursor and the index
 			index = -1;
+			numItems--;								// decrement the number of items
 		}
 	}
 
@@ -381,5 +410,15 @@ public final class List{
 		private void setPrev(Node newPrev){
 			prev = newPrev;
 		}
+
+		/** returns a string of the data stored in the node
+		@param takes no arguments
+		@return returns a string of the data **/
+		/*
+		private String toString(){
+			String s = Integer.toString(data);
+			return s;
+		}
+		*/
 	}
 }
