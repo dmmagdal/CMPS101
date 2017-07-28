@@ -46,27 +46,32 @@ public class Lex{
 
 		List indices = new List();													// initialize new list object to store indices
 		// start the sorting
-		indices.append(0);	// input[0]
+		indices.append(0);	// input[0]												insert the first item
 		
-		for (int i = 1; i < input.length; i++){
-			indices.moveFront();
-			if (input[i].compareTo(input[indices.get()]) <= 0){
+		for (int i = 1; i < input.length; i++){										// iterate through the inut String[] array
+			indices.moveFront();													// put the cursor to the front
+			if (input[i].compareTo(input[indices.get()]) < 0){						// if the item is less than the front, insert the index before the cursor
 				indices.insertBefore(i);
 			}
-			else {	//arg[i].compareT0(arg[l.get()]) > 0
-				while (input[i].compareTo(input[indices.get()]) > 0){
-					indices.moveNext();
+			else {	//arg[i].compareT0(arg[l.get()]) > 0							// here the items in the array are greater than the cursor
+				while (input[i].compareTo(input[indices.get()]) > 0){				// while the above is true
+					if (indices.get() == indices.back()){							// if the cursor is at the back node, insert the index after
+						indices.insertAfter(i);
+					}
+					else{															// otherwise, increment the cursor to the next node on the list
+						indices.moveNext();
+					}
 				}
-				indices.insertBefore(i);
+				indices.insertBefore(i);											// by now, you will insert the index before the cursor
 			}
-		}
+		}																			// end sort
 
 		// print to file
-		indices.moveFront();
-		for (int l = 0; l < indices.length(); l++){
+		indices.moveFront();														// set cursor to front
+		for (int l = 0; l < indices.length(); l++){									// iterate through list and return the umber of the index to be printed
 			out.println(input[indices.get()]);
-			System.out.println(input[indices.get()]);
-			indices.moveNext();
+			// System.out.println(input[indices.get()]);							// print to console to see what gets printed to file. remember to comment out in final product
+			indices.moveNext();														// move the cursor to the next position in the list
 		}
 
 		

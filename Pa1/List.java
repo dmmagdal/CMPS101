@@ -198,7 +198,12 @@ public final class List{
 			Node n = new Node(data);				// inistialize the new node
 			n.setPrev(cursor.prev);					// set the node's previous reference to the cursor's previous reference
 			n.setNext(cursor);						// set the node's next reference to the cursor
-			cursor.prev.setNext(n);					// set the next reference of the cursor's previous node to the new node
+			if (cursor.equals(getFront())){			// if the cursor is the front node
+				front = n;							// set front to n
+			}
+			else {
+				cursor.prev.setNext(n);					// set the next reference of the cursor's previous node to the new node
+			}
 			cursor.setPrev(n);						// set the cursor's previous reference to the new node
 			index++;
 			numItems++;								// increment the number of items
@@ -213,9 +218,13 @@ public final class List{
 			Node n = new Node(data);				// inistialize the new node
 			n.setNext(cursor.next);					// set the node's next reference to the cursor's next reference
 			n.setPrev(cursor);						// set the node's previous reference to the cursor
-			cursor.next.setPrev(n);					// set the previous reference of the cursor's next node to the new node
+			if (cursor.equals(getBack())){			// if the cursor is the back node
+				back = n;							// set back to be n
+			}
+			else{
+				cursor.next.setPrev(n);				// set the previous reference of the cursor's next node to the new node
+			}
 			cursor.setNext(n);						// set the cursor's next reference to the new node
-			index--;
 			numItems++;								// increment the number of items
 		}
 	}
