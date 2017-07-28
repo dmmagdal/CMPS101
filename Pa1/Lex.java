@@ -68,9 +68,15 @@ public class Lex{
 
 		// print to file
 		indices.moveFront();														// set cursor to front
+		/* // tried to iterate through the list to print. ended up having copy of the last node at the end. delete this chunk
 		for (int l = 0; l < indices.length(); l++){									// iterate through list and return the umber of the index to be printed
 			out.println(input[indices.get()]);
 			// System.out.println(input[indices.get()]);							// print to console to see what gets printed to file. remember to comment out in final product
+			indices.moveNext();														// move the cursor to the next position in the list
+		}
+		*/
+		while (indices.index() != indices.length()-1){								// while the index of the cursor is not at the end of the list
+			out.println(input[indices.get()]);										// print to file the index held in the list of the input string[] array
 			indices.moveNext();														// move the cursor to the next position in the list
 		}
 
