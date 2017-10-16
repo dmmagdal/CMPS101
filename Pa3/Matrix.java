@@ -75,7 +75,7 @@ public class Matrix{
 	@param takes no arguments
 	@return returns nothing **/
 	public void makeZero(){
-		for (int i = 0; i < size; i++){
+		for (int i = 1; i <= size; i++){
 			row[i].clear();									// clear each of the rows
 		}
 	}
@@ -240,7 +240,8 @@ public class Matrix{
 	public String toString(){
 		String line = "";									// string line holds all the strings of the matrix
 		for (int i = 1; i <= size; i++){
-			line.concat(row[i].toString()+" ");				// iterate through the lists and concatenate the string to the original line
+			line = line.concat(i+": ");
+			line = line.concat(row[i].toString()+"\n");				// iterate through the lists and concatenate the string to the original line
 		}
 		return line;										// return the line string
 	}
@@ -303,7 +304,7 @@ public class Matrix{
 		@param takes no arguments
 		@return returns a string of the entry**/
 		public String toString(){
-			return "("+column+","+entry+")";
+			return "("+column+", "+entry+")";
 		}
 
 		/** return a boolean comparing the entries
@@ -313,7 +314,7 @@ public class Matrix{
 			boolean equal = false;
 			if (x instanceof Entry){
 				Entry e = (Entry)x;
-				if (e.column == column && e.entry == entry){
+				if (e.getColumn() == column && e.getEntry() == entry){
 					equal = true;
 				}
 			}

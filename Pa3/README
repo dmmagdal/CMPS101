@@ -9,4 +9,6 @@ MatrixTest.java	Client to test all functions in Matrix.java
 MatrixClient.java	Client used to test functions in Matrix.java much like MatrixTest.java
 UndefinedCursorException.java	An exception used by List.java that is thrown whenever performing an
 				operation on an undefined cursor
+InvalidEntryException.java	An exception used by Matrix.java that is thrown whenever an entry is
+				outside of the matrix parameters
 Makefile	Takes all relevent files and compiles then into .jar file called Sparse

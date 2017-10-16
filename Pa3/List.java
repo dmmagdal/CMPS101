@@ -283,13 +283,17 @@ public final class List{
 	@return returns nothing **/
 	public void delete(){
 		if (!isEmpty() && index >= 0){				// if the list isn't empty and the index is greater than or equal to zero
-			if (cursor.equals(front)){				// if the cursor is at the front of the list
-				front = cursor.next;
-				front.setPrev(null);
+			if (cursor.equals(front) && numItems > 1){	// if the cursor is at the front of the list and there is more than one item in the list
+				front = cursor.next;				// move the front to the next item in the list
+				front.setPrev(null);				// set the front's previous pointer to null 
 			}
-			else if (cursor.equals(back)){			// if the ucursor is at the back of the list
-				back = cursor.prev;
-				back.setNext(null);
+			else if (cursor.equals(front) && front.equals(back)){	// if the cursor is at the front and there is only one item in the list
+				front = cursor.next;				// set the front/back = to null
+				back = front;
+			}
+			else if (cursor.equals(back) && numItems > 1){	// if the ucursor is at the back of the list and there is more than one item in the list
+				back = cursor.prev;					// move the back to the previous item in the list
+				back.setNext(null);					// set the back's next pointer to null
 			}
 			else{									// otherwise the cursor is in the middle of the list
 				cursor.prev.setNext(cursor.next);	// set the reference to the next node of the node previous to the crusor to the next node after the cursor
