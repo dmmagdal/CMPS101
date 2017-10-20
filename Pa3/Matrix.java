@@ -53,7 +53,7 @@ public class Matrix{
 			if (m.getSize() != size || m.getNNZ() != nnz){	// if the size or nonzero numbers are not the same 
 				equal = false;								// set equal boolean to false
 			}
-			else if (equal != false){						// otherwise, if the equal boolean is not false
+			else{											// otherwise, if the equal boolean is not false
 				for (int i = 1; i <= size; i++){
 					if (!row[i].equals(m.row[i])){			// if the rows are not equal
 						equal = false;						// set equal boolean to false 
@@ -90,6 +90,7 @@ public class Matrix{
 			while (row[i].get() != null){					// while the cursor for the list is not null
 				Entry rowEntry = (Entry) row[i].get();		// create a new variable to hold the node data retrieved from the List's cursor
 				cp.changeEntry(i, rowEntry.getColumn(), rowEntry.getEntry());	// insert new data at that cursor
+				row[i].moveNext();							// move the cursor along the list
 			}
 		}
 		return cp;											// return the matrix copy
@@ -110,6 +111,26 @@ public class Matrix{
 				row[i].moveFront();							// move cursor to front
 				while (row[i].get() != null){				// while the cursor is not null
 					Entry rowCursor = (Entry) row[i].get();	// Entry object used to store cursor data
+					if (j <= rowCursor.getColumn()){		// if the entry object is less than or equal to the cursor column
+						row[i].insertBefore(e);				// insert it in front of the cursor
+						if (j == rowCursor.getColumn()){	// if the entry object is exactly equal to the cursor column
+							row[i].delete();				// delete the cursor (which breaks the loop)
+						}
+						else{								// otherwize (the entry object is less than the cursor column, so we have to break the loop another way)
+							row[i].moveBack();				// move the cursor to the back and then have it run off the list
+							row[i].moveNext();
+						}
+					}
+					else if (row[i].get().equals(row[i].back()) && j > rowCursor.getColumn()){	// cursor is at the back and the cursor column is less than the entry object
+						row[i].append(e);					// append the object to the back of the list
+						row[i].moveBack();					// move the cursor to the back and then have it run off the list
+						row[i].moveNext();
+					}
+					else { 									// j > rowCursor.getCloumn()
+						row[i].moveNext();					// move the cursor along the list
+					}
+
+					/*			Old Code
 					if (rowCursor.getColumn() > j){			// if the cursor "index" is greater than j
 						row[i].insertBefore(e);				// insert the entry before the cursor
 						row[i].moveBack();					// set cursor to the back of the list
@@ -117,7 +138,7 @@ public class Matrix{
 					}
 					else if (rowCursor.getColumn() == j){	// if the cursor "index" is j (there already exists an element in the list with the same column)
 						row[i].insertBefore(e);				// insert the new entry before the cursor
-						row[i].delete();					// delete the cursor element (sets cursor to null breaking the loop)
+						row[i].delete();					// delete the former cursor element (sets cursor to null breaking the loop)
 					}
 					else if (rowCursor.getColumn() < j && row[i].get().equals(row[i].back())){	// if the cursor "index" is less than j and the cursor is the back
 						row[i].insertAfter(e);				// insert the new entry after the cursor
@@ -127,6 +148,9 @@ public class Matrix{
 					else if (rowCursor.getColumn() < j && !row[i].get().equals(row[i].back())){	// if the cursor "index" is less than j and the cursor is isn't the back
 						row[i].moveNext();					// move the cursor to the next entry on the list
 					}
+					*/
+
+
 				}
 			}
 		}

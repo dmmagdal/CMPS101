@@ -75,24 +75,23 @@ public final class List{
 		boolean result;
 		if (x instanceof List){
 			List l = (List) x;
-			boolean equal = true;					// boolean value to store if the lists are equal or not
-			cursor = front;							// set this list's cursor to the front element
-			Node lCursor = new Node(l.front());		// create a faux cursor for the argument list starting at the front of that list
+			result = true;							// boolean value to store if the lists are equal or not
+			moveFront();							// move the respective cursors to the front of the lists
+			l.moveFront();
 			if (length() != l.length()){			// if the length of the two lists are not the same, equal is false
-				equal = false;
+				result = false;
 			}
 			else{									// otherwise, traverse both lists
-				while (cursor != null && equal == true){// while the cursor traverses the list
-					if (!cursor.equals(lCursor)){	// if at any point the data of the two doesn't match
-						equal = false;				// equal is false
+				while (cursor != null && result == true){// while the cursor traverses the list
+					if (!get().equals(l.get())){	// if at any point the data of the two doesn't match
+						result = false;				// equal is false
 					}
-					cursor = cursor.next;			// increment both nodes through their respective lists
-					lCursor = lCursor.next;
+					moveNext();						// increment both nodes through their respective lists
+					l.moveNext();
 				}
 			}
 			cursor = null;							// clear the cursor of this list and its index
 			index = -1;
-			result = equal;							// return the boolean equal
 		}
 		else{
 			result = false;
