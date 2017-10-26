@@ -7,39 +7,36 @@ import java.util.Scanner;
 import java.io.*;
 
 public class Sparse{
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException, FileNotFoundException{
 		Scanner in = new Scanner(new FileReader(args[0]));						// new scanner object to read from file
 		PrintWriter out = new PrintWriter(new FileWriter(args[1]));				// new printwriter object to write to file
 
 		Matrix A, B;															// new matrix variables
 
-		int lineNum = 0;														// int to hld line number from input file
-		int Ainput;																// ints to hold the number of non-zero entries for A and B
-		int Binput;
-		while (in.hasNextLine()){												// while the scanner can read from the file
-			String[] input = in.nextLine().split("\\s+");
+		int lineNum = 0;														// int to hold line number from input file
+		
+		String[] input = in.nextLine().split("\\s+");							// read first line of the file to set up variables
+		A = new Matrix(Integer.parseInt(input[0]));								// initialize matrices
+		B = new Matrix(Integer.parseInt(input[0]));
+		int Ainput = Integer.parseInt(input[1]);								// ints to hold the number of non-zero entries for A and B
+		int Binput = Integer.parseInt(input[2]);
 
-			if (lineNum == 0){													// if it's the first line of the file
-				// input[0] holds matrix size
-				// input[1] holds matrix A nnz
-				// input[2] holds matrix B nnz
-
-				// initialize matrices in "first" line
-				A = new Matrix(Integer.parseInt(input[0]));										// initialize A and B size
-				B = new Matrix(Integer.parseInt(input[0]));
-
-				// set up variables to scan for nonzero entries for the matrices
-				Ainput = Integer.parseInt(input[1]);												// give the nnz variables above an actual value so that way they can scan and enter the apporpriate number of entries
-				Binput = Integer.parseInt(input[2]);
-			}
-
-			if (lineNum%(Ainput+1) != 0){
-
-			}
-			
-
+		String blank = in.nextLine();
+		while (in.hasNextLine() && lineNum < Ainput){							// scan lines to enter the entries into the matrix
+			String[] entry = in.nextLine().split("\\s+");
+			A.changeEntry(Integer.parseInt(entry[0]), Integer.parseInt(entry[1]), Double.parseDouble(entry[2]));
+			lineNum++;
 		}
 
+		blank = in.nextLine();
+		lineNum = 0;															// reset line counter
+		while (in.hasNextLine() && lineNum < Binput){
+			String[] entry = in.nextLine().split("\\s+");
+			B.changeEntry(Integer.parseInt(entry[0]), Integer.parseInt(entry[1]), Double.parseDouble(entry[2]));
+			lineNum++;
+		}
+
+		// perform operations
 		out.println("A has "+A.getNNZ()+" non-zero entries: ");
 		out.print(A.toString());
 		out.println("");

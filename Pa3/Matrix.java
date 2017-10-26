@@ -207,7 +207,6 @@ public class Matrix{
 					newrow.append(e);						// append the entry to the temporary list object
 					M.row[i].moveNext();					// move the M matrix's cursor to the next position
 				}
-				
 			}
 			add.row[i] = newrow;							// set that row's list equal to the new list
 		}
@@ -265,10 +264,10 @@ public class Matrix{
 	@return returns a string of this matrix**/
 	public String toString(){
 		String line = "";									// string line holds all the strings of the matrix
-		if (getNNZ() != 0){									// if there are nonzero entries (nonempty matrix)
+		if (getNNZ() != 0){									// if there are nonzero entries (nonempty matrix) or the matrix isn't empty
 			for (int i = 1; i <= size; i++){
-			line = line.concat(i+": ");
-			line = line.concat(row[i].toString()+"\n");		// iterate through the lists and concatenate the string to the original line
+				line = line.concat(i+": ");
+				line = line.concat(row[i].toString()+"\n");		// iterate through the lists and concatenate the string to the original line
 			}
 		}
 		return line;										// return the line string
@@ -333,7 +332,11 @@ public class Matrix{
 		@return returns a string of the entry**/
 		public String toString(){
 			// Was told not to use round() function. 
-			return "("+column+", "+entry+")";
+			String coords = "";
+			if (entry != 0.0){
+				coords = coords.concat("("+column+", "+entry+")");
+			}
+			return coords;
 		}
 
 		/** return a boolean comparing the entries
