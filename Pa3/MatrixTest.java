@@ -52,12 +52,12 @@ public class MatrixTest{
 		System.out.print(b.toString());
 		System.out.println("");
 
-		System.out.println("Zeroed matrix b. Is b equal to a?: "+b.equals(a));
+		System.out.println("Zeroed matrix b. Is b equal to a?: "+b.equals(a));			// passed: correct output given
 		System.out.println("");
 		
 		
 		// test transpose
-		Matrix c = a.transpose();
+		Matrix c = a.transpose();														// passed: correct output given
 		System.out.print(c.toString());
 		System.out.println("");
 		
@@ -77,11 +77,11 @@ public class MatrixTest{
 		System.out.print(f.toString());													// passed: correct output given
 		System.out.println("");
 
-		/*
+		
 		// test mult
-		Matrix g = a.mult(e);
+		Matrix g = a.mult(e);															//
 		System.out.print(g.toString());
 		System.out.println("");
-		*/
+		
 	}
 }

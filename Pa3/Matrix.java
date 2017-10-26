@@ -50,7 +50,7 @@ public class Matrix{
 		if (x instanceof Matrix){							// if x is an instance of the Matrix class
 			equal = true;									// set boolean to true until proven otherwise
 			Matrix m = (Matrix)x;							// convert object x into matrix and set that to matrix m
-			if (m.getSize() != size || m.getNNZ() != nnz){	// if the size or nonzero numbers are not the same 
+			if (m.getSize() != getSize() || m.getNNZ() != getNNZ()){	// if the size or nonzero numbers are not the same 
 				equal = false;								// set equal boolean to false
 			}
 			else{											// otherwise, if the equal boolean is not false
@@ -105,7 +105,7 @@ public class Matrix{
 		if (i >= 1 && i <= size && j >= 1 && j <= size){
 			Entry e = new Entry(j, x);						// create new entry object
 			if (row[i].length() == 0){						// if the target row is empty
-				row[i].append(e);							// append the entry to the row. 		
+				row[i].append(e);							// append the entry to the row. 
 			}
 			else {											// otherwise the target row is not empty
 				row[i].moveFront();							// move cursor to front
@@ -113,6 +113,7 @@ public class Matrix{
 					Entry rowCursor = (Entry) row[i].get();	// Entry object used to store cursor data
 					if (j <= rowCursor.getColumn()){		// if the entry object is less than or equal to the cursor column
 						row[i].insertBefore(e);				// insert it in front of the cursor
+						// System.out.println(row[i].toString()+"\n");
 						if (j == rowCursor.getColumn()){	// if the entry object is exactly equal to the cursor column
 							row[i].delete();				// delete the cursor (which breaks the loop)
 						}
@@ -231,6 +232,7 @@ public class Matrix{
 			while(row[i].get() != null){					// while the cursor is not null
 				Entry e = (Entry) row[i].get();				// new entry object that holds the node data stored at the cursor
 				tran.changeEntry(e.getColumn(), i, e.getEntry());	// change entry to the new matrix, this time swapping the row and column data while keeping the entry (double) the same
+				row[i].moveNext();
 			}
 		}
 		return tran;										// return the transpose entry
@@ -263,9 +265,11 @@ public class Matrix{
 	@return returns a string of this matrix**/
 	public String toString(){
 		String line = "";									// string line holds all the strings of the matrix
-		for (int i = 1; i <= size; i++){
+		if (getNNZ() != 0){									// if there are nonzero entries (nonempty matrix)
+			for (int i = 1; i <= size; i++){
 			line = line.concat(i+": ");
-			line = line.concat(row[i].toString()+"\n");				// iterate through the lists and concatenate the string to the original line
+			line = line.concat(row[i].toString()+"\n");		// iterate through the lists and concatenate the string to the original line
+			}
 		}
 		return line;										// return the line string
 	}
@@ -328,6 +332,7 @@ public class Matrix{
 		@param takes no arguments
 		@return returns a string of the entry**/
 		public String toString(){
+			// Was told not to use round() function. 
 			return "("+column+", "+entry+")";
 		}
 
