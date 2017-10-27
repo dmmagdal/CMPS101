@@ -104,7 +104,7 @@ public class Matrix{
 	public void changeEntry(int i, int j, double x){
 		if (i >= 1 && i <= size && j >= 1 && j <= size){
 			Entry e = new Entry(j, x);						// create new entry object
-			if (row[i].length() == 0){						// if the target row is empty
+			if (row[i].length() == 0 && x != 0.0){			// if the target row is empty
 				row[i].append(e);							// append the entry to the row. 
 			}
 			else {											// otherwise the target row is not empty
@@ -112,9 +112,10 @@ public class Matrix{
 				while (row[i].get() != null){				// while the cursor is not null
 					Entry rowCursor = (Entry) row[i].get();	// Entry object used to store cursor data
 					if (j <= rowCursor.getColumn()){		// if the entry object is less than or equal to the cursor column
-						row[i].insertBefore(e);				// insert it in front of the cursor
-						// System.out.println(row[i].toString()+"\n");
-						if (j == rowCursor.getColumn()){	// if the entry object is exactly equal to the cursor column
+						if (x != 0.0){						// if the new entry is not zero
+							row[i].insertBefore(e);			// insert it in front of the cursor
+						}
+						else if (j == rowCursor.getColumn()){	// if the entry object is exactly equal to the cursor column
 							row[i].delete();				// delete the cursor (which breaks the loop)
 						}
 						else{								// otherwize (the entry object is less than the cursor column, so we have to break the loop another way)
@@ -122,7 +123,7 @@ public class Matrix{
 							row[i].moveNext();
 						}
 					}
-					else if (row[i].get().equals(row[i].back()) && j > rowCursor.getColumn()){	// cursor is at the back and the cursor column is less than the entry object
+					else if (row[i].get().equals(row[i].back()) && j > rowCursor.getColumn() && x != 0.0){	// cursor is at the back and the cursor column is less than the entry object
 						row[i].append(e);					// append the object to the back of the list
 						row[i].moveBack();					// move the cursor to the back and then have it run off the list
 						row[i].moveNext();
@@ -130,28 +131,6 @@ public class Matrix{
 					else { 									// j > rowCursor.getCloumn()
 						row[i].moveNext();					// move the cursor along the list
 					}
-
-					/*			Old Code
-					if (rowCursor.getColumn() > j){			// if the cursor "index" is greater than j
-						row[i].insertBefore(e);				// insert the entry before the cursor
-						row[i].moveBack();					// set cursor to the back of the list
-						row[i].moveNext();					// iterate cursor along to make it null and break the loop
-					}
-					else if (rowCursor.getColumn() == j){	// if the cursor "index" is j (there already exists an element in the list with the same column)
-						row[i].insertBefore(e);				// insert the new entry before the cursor
-						row[i].delete();					// delete the former cursor element (sets cursor to null breaking the loop)
-					}
-					else if (rowCursor.getColumn() < j && row[i].get().equals(row[i].back())){	// if the cursor "index" is less than j and the cursor is the back
-						row[i].insertAfter(e);				// insert the new entry after the cursor
-						row[i].moveBack();					// set cursor to the back of the list
-						row[i].moveNext();					// iterate cursor along to make it null and break the loop
-					}
-					else if (rowCursor.getColumn() < j && !row[i].get().equals(row[i].back())){	// if the cursor "index" is less than j and the cursor is isn't the back
-						row[i].moveNext();					// move the cursor to the next entry on the list
-					}
-					*/
-
-
 				}
 			}
 		}
@@ -166,15 +145,16 @@ public class Matrix{
 	public Matrix scalarMult(double x){
 		Matrix smult = new Matrix(size);					// create a new matrix object to hold the scalar multiplication of a matrix
 		for (int i = 1; i <= size; i++){
-			List newrow = new List();						// create a new list (temporary)
+			// List newrow = new List();						// create a new list (temporary)
 			row[i].moveFront();								// move the cursor to the front
 			while (row[i].get() != null){					// while the cursor is not null
 				Entry oldRowEntry = (Entry) row[i].get();	// Entry object holds the old row cursor data
 				Entry e = new Entry(oldRowEntry.getColumn(), x*oldRowEntry.getEntry());	// create new entry object that has same column number as well as scalar mult of entry from the old row
-				newrow.append(e);							// append the entry to the list
+				// newrow.append(e);							// append the entry to the list
+				smult.changeEntry(i, e.getColumn(), e.getEntry());
 				row[i].moveNext();							// move the cursor to the next entry
 			}
-			smult.row[i] = newrow;							// set the new list's row equal to that new row
+			// smult.row[i] = newrow;							// set the new list's row equal to that new row
 		}
 		return smult;										// return the scalar mult matrix
 	}
@@ -185,7 +165,7 @@ public class Matrix{
 	public Matrix add(Matrix M){
 		Matrix add = new Matrix(size);						// create a new matrix object to hold matrix sum
 		for (int i = 1; i <= size; i++){
-			List newrow = new List();						// create a new list object (temporary) to hold each row
+			// List newrow = new List();						// create a new list object (temporary) to hold each row
 			row[i].moveFront();								// move cursor of this matrix to the front
 			M.row[i].moveFront();							// move cursor of matrix M to the front (both cursors are now in the same place)
 			while (row[i].get() != null && M.row[i].get() != null){	// while both cursors are not null
@@ -193,22 +173,25 @@ public class Matrix{
 				Entry argOldRow = (Entry) M.row[i].get();	// entry object for tha argument old row's cursor data
 				if (oldRow.getColumn() == argOldRow.getColumn()){	// if both cursors have the same column
 					Entry e = new Entry(oldRow.getColumn(), oldRow.getEntry()+argOldRow.getEntry());	// create a new entry object holding the column and sum of both entries
-					newrow.append(e);						// append the entry to the temporary list object
+					// newrow.append(e);						// append the entry to the temporary list object
+					add.changeEntry(i, e.getColumn(), e.getEntry());
 					row[i].moveNext();						// move both cursors to the next position
 					M.row[i].moveNext();
 				}
 				if (oldRow.getColumn() < argOldRow.getColumn()){	// if the column number on the first matrix is less than the M matrix
 					Entry e = new Entry(oldRow.getColumn(), oldRow.getEntry());	// create a new entry object holding the column and the first matrix's entry
-					newrow.append(e);						// append the entry to the temporary list object
+					// newrow.append(e);						// append the entry to the temporary list object
+					add.changeEntry(i, e.getColumn(), e.getEntry());
 					row[i].moveNext();						// move the first matrix's cursor to the next position
 				}
 				if (oldRow.getColumn() > argOldRow.getColumn()){	// if the column number on the first matrix is greater than the M matrix
 					Entry e = new Entry(argOldRow.getColumn(), argOldRow.getEntry());	// create a new entry object holding the column and the M matrix's entry
-					newrow.append(e);						// append the entry to the temporary list object
+					// newrow.append(e);						// append the entry to the temporary list object
+					add.changeEntry(i, e.getColumn(), e.getEntry());
 					M.row[i].moveNext();					// move the M matrix's cursor to the next position
 				}
 			}
-			add.row[i] = newrow;							// set that row's list equal to the new list
+			// add.row[i] = newrow;							// set that row's list equal to the new list
 		}
 		return add;											// return the addition matrix
 	}
@@ -266,8 +249,13 @@ public class Matrix{
 		String line = "";									// string line holds all the strings of the matrix
 		if (getNNZ() != 0){									// if there are nonzero entries (nonempty matrix) or the matrix isn't empty
 			for (int i = 1; i <= size; i++){
-				line = line.concat(i+": ");
-				line = line.concat(row[i].toString()+"\n");		// iterate through the lists and concatenate the string to the original line
+				if (row[i].length() == 0){
+					continue;
+				}
+				else{
+					line = line.concat(i+": ");
+					line = line.concat(row[i].toString()+"\n");	// iterate through the lists and concatenate the string to the original line
+				}
 			}
 		}
 		return line;										// return the line string
@@ -332,11 +320,7 @@ public class Matrix{
 		@return returns a string of the entry**/
 		public String toString(){
 			// Was told not to use round() function. 
-			String coords = "";
-			if (entry != 0.0){
-				coords = coords.concat("("+column+", "+entry+")");
-			}
-			return coords;
+			return "("+column+", "+entry+")";
 		}
 
 		/** return a boolean comparing the entries
