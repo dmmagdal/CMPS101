@@ -104,31 +104,29 @@ public class Matrix{
 	public void changeEntry(int i, int j, double x){
 		if (i >= 1 && i <= size && j >= 1 && j <= size){
 			Entry e = new Entry(j, x);						// create new entry object
-			if (row[i].length() == 0 && x != 0.0){			// if the target row is empty
+			if (row[i].length() == 0 && x != 0.0){			// if the target row is empty and x is not 0
 				row[i].append(e);							// append the entry to the row. 
 			}
-			else {											// otherwise the target row is not empty
+			else {											// otherwise the target row is not empty (x can be 0)
 				row[i].moveFront();							// move cursor to front
 				while (row[i].get() != null){				// while the cursor is not null
 					Entry rowCursor = (Entry) row[i].get();	// Entry object used to store cursor data
-					if (j <= rowCursor.getColumn()){		// if the entry object is less than or equal to the cursor column
+					if (j <= rowCursor.getColumn()){		// if j <= cursor column
 						if (x != 0.0){						// if the new entry is not zero
 							row[i].insertBefore(e);			// insert it in front of the cursor
 						}
-						else if (j == rowCursor.getColumn()){	// if the entry object is exactly equal to the cursor column
-							row[i].delete();				// delete the cursor (which breaks the loop)
+						if (j == rowCursor.getColumn()){	// if the columns are the same (x can be 0 or nonzero)
+							row[i].delete();				// delete the cursor (which breaks the loop). This will also execute if x is 0 and the cursor's value is not 0
 						}
-						else{								// otherwize (the entry object is less than the cursor column, so we have to break the loop another way)
-							row[i].moveBack();				// move the cursor to the back and then have it run off the list
-							row[i].moveNext();
-						}
+						row[i].moveBack();					// move the cursor to the back and then have it run off the list to break while loop
+						row[i].moveNext();					// this will execute once insertion was successfull or x is 0 and the non zero entry was erased.
 					}
-					else if (row[i].get().equals(row[i].back()) && j > rowCursor.getColumn() && x != 0.0){	// cursor is at the back and the cursor column is less than the entry object
+					else if (row[i].get().equals(row[i].back()) && j > rowCursor.getColumn() && x != 0.0){	// cursor is at the back and j is still > cursor column and x is not 0
 						row[i].append(e);					// append the object to the back of the list
 						row[i].moveBack();					// move the cursor to the back and then have it run off the list
 						row[i].moveNext();
 					}
-					else { 									// j > rowCursor.getCloumn()
+					else { 									// j > cursor column
 						row[i].moveNext();					// move the cursor along the list
 					}
 				}
@@ -164,45 +162,46 @@ public class Matrix{
 	@return returns a new matrix that is the sum of this matrix with M**/
 	public Matrix add(Matrix M){
 		Matrix add = new Matrix(size);						// create a new matrix object to hold matrix sum
-		for (int i = 1; i <= size; i++){
-			// List newrow = new List();						// create a new list object (temporary) to hold each row
-			row[i].moveFront();								// move cursor of this matrix to the front
-			M.row[i].moveFront();							// move cursor of matrix M to the front (both cursors are now in the same place)
-			while (row[i].get() != null && M.row[i].get() != null){	// while both cursors are not null
-				Entry oldRow = (Entry) row[i].get();		// entry object for the old row's cursor data
-				Entry argOldRow = (Entry) M.row[i].get();	// entry object for tha argument old row's cursor data
-				if (oldRow.getColumn() == argOldRow.getColumn()){	// if both cursors have the same column
-					Entry e = new Entry(oldRow.getColumn(), oldRow.getEntry()+argOldRow.getEntry());	// create a new entry object holding the column and sum of both entries
-					// newrow.append(e);						// append the entry to the temporary list object
-					add.changeEntry(i, e.getColumn(), e.getEntry());
-					row[i].moveNext();						// move both cursors to the next position
-					M.row[i].moveNext();
-				}
-				if (oldRow.getColumn() < argOldRow.getColumn()){	// if the column number on the first matrix is less than the M matrix
-					Entry e = new Entry(oldRow.getColumn(), oldRow.getEntry());	// create a new entry object holding the column and the first matrix's entry
-					// newrow.append(e);						// append the entry to the temporary list object
-					add.changeEntry(i, e.getColumn(), e.getEntry());
-					row[i].moveNext();						// move the first matrix's cursor to the next position
-				}
-				if (oldRow.getColumn() > argOldRow.getColumn()){	// if the column number on the first matrix is greater than the M matrix
-					Entry e = new Entry(argOldRow.getColumn(), argOldRow.getEntry());	// create a new entry object holding the column and the M matrix's entry
-					// newrow.append(e);						// append the entry to the temporary list object
-					add.changeEntry(i, e.getColumn(), e.getEntry());
-					M.row[i].moveNext();					// move the M matrix's cursor to the next position
-				}
-				if (row[i].get() != null && M.row[i].get() == null){
-					Entry e = new Entry(oldRow.getColumn(), oldRow.getEntry());
-					add.changeEntry(i, e.getColumn(), e.getEntry());
-					row[i].moveNext();
-				}
-				if (row[i].get() == null && M.row[i].get() != null){
-					Entry e = new Entry(argOldRow.getColumn(), argOldRow.getEntry());
-					add.changeEntry(i, e.getColumn(), e.getEntry());	// this is where the trouble is  <------------------------------------LOOK!
-					M.row[i].moveNext();
-				}
-			}
-			// add.row[i] = newrow;							// set that row's list equal to the new list
+		if (equals(M)){										// if the matrices are the same (ie A + A)
+			add = scalarMult(2);							// return a scalar multiple of that matrix 
 		}
+		else {
+			for (int i = 1; i <= size; i++){
+				// List newrow = new List();						// create a new list object (temporary) to hold each row
+				row[i].moveFront();								// move cursor of this matrix to the front
+				M.row[i].moveFront();							// move cursor of matrix M to the front (both cursors are now in the same place)
+				while (row[i].get() != null && M.row[i].get() != null){	// while both cursors are not null
+					Entry oldRow = (Entry) row[i].get();		// entry object for the old row's cursor data
+					Entry argOldRow = (Entry) M.row[i].get();	// entry object for tha argument old row's cursor data
+					if (row[i].get() != null && M.row[i].get() == null){
+						add.changeEntry(i, oldRow.getColumn(), oldRow.getEntry());
+						row[i].moveNext();
+					}
+					else if (row[i].get() == null && M.row[i].get() != null){
+						add.changeEntry(i, argOldRow.getColumn(), argOldRow.getEntry());
+						M.row[i].moveNext();
+					}
+					else if (oldRow.getColumn() == argOldRow.getColumn()){	// if both cursors have the same column
+						// newrow.append(e);						// append the entry to the temporary list object
+						add.changeEntry(i, oldRow.getColumn(), oldRow.getEntry()+argOldRow.getEntry());
+						row[i].moveNext();						// move both cursors to the next position
+						M.row[i].moveNext();
+					}
+					else if (oldRow.getColumn() < argOldRow.getColumn()){	// if the column number on the first matrix is less than the M matrix
+						// newrow.append(e);						// append the entry to the temporary list object
+						add.changeEntry(i, oldRow.getColumn(), oldRow.getEntry());
+						row[i].moveNext();						// move the first matrix's cursor to the next position
+					}
+					else if (oldRow.getColumn() > argOldRow.getColumn()){	// if the column number on the first matrix is greater than the M matrix
+						// newrow.append(e);						// append the entry to the temporary list object
+						add.changeEntry(i, argOldRow.getColumn(), argOldRow.getEntry());
+						M.row[i].moveNext();					// move the M matrix's cursor to the next position
+					}
+				}
+			// add.row[i] = newrow;							// set that row's list equal to the new list
+			}
+		}
+		
 		return add;											// return the addition matrix
 	}
 

@@ -1,0 +1,43 @@
+
+List of tests passed/failed:
+
+Empty_getSize PASSED
+NonEmpty_getSize PASSED
+Empty_getNNZ PASSED
+makeZero_getNNZ PASSED
+changeEntry_getNNZ PASSED
+copy_getNNZ PASSED
+transpose_getNNZ PASSED
+add_getNNZ FAILED: in test 2
+sub_getNNZ FAILED: in test 2
+scalarMult_getNNZ PASSED
+
+Unfortunately your program crashed on test mult_getNNZ With an exception of:
+
+java.lang.NullPointerException
+	at List$Node.access$400(List.java:343)
+	at List.delete(List.java:287)
+	at Matrix.changeEntry(Matrix.java:119)
+	at ModelMatrixTest.runTest(ModelMatrixTest.java:193)
+	at ModelMatrixTest.main(ModelMatrixTest.java:315)
+
+mult_getNNZ FAILED: due to exception
+Empty_equals PASSED
+
+Unfortunately your program crashed on test NonEmpty_equals With an exception of:
+
+java.lang.NullPointerException
+	at List$Node.access$400(List.java:343)
+	at List.delete(List.java:287)
+	at Matrix.changeEntry(Matrix.java:119)
+	at ModelMatrixTest.runTest(ModelMatrixTest.java:224)
+	at ModelMatrixTest.main(ModelMatrixTest.java:315)
+
+NonEmpty_equals FAILED: due to exception
+Empty_toString PASSED
+NonEmpty_toString FAILED: in test 1
+
+Passed 10 tests out of 15 possible
+
+This gives you a score of 40 out of 60 for MatrixTest
+
