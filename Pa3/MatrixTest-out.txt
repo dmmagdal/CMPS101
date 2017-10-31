@@ -8,8 +8,8 @@ makeZero_getNNZ PASSED
 changeEntry_getNNZ PASSED
 copy_getNNZ PASSED
 transpose_getNNZ PASSED
-add_getNNZ FAILED: in test 2
-sub_getNNZ FAILED: in test 2
+add_getNNZ PASSED
+sub_getNNZ PASSED
 scalarMult_getNNZ PASSED
 
 Unfortunately your program crashed on test mult_getNNZ With an exception of:
@@ -37,7 +37,7 @@ NonEmpty_equals FAILED: due to exception
 Empty_toString PASSED
 NonEmpty_toString FAILED: in test 1
 
-Passed 10 tests out of 15 possible
+Passed 12 tests out of 15 possible
 
-This gives you a score of 40 out of 60 for MatrixTest
+This gives you a score of 48 out of 60 for MatrixTest
 

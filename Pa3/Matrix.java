@@ -170,18 +170,16 @@ public class Matrix{
 				// List newrow = new List();						// create a new list object (temporary) to hold each row
 				row[i].moveFront();									// move cursor of this matrix to the front
 				M.row[i].moveFront();								// move cursor of matrix M to the front (both cursors are now in the same place)
-				while (row[i].get() != null && M.row[i].get() != null){	// while both cursors are not null
+				while (row[i].get() != null || M.row[i].get() != null){	// while both cursors are not null
 					Entry oldRow = (Entry) row[i].get();			// entry object for the old row's cursor data
 					Entry argOldRow = (Entry) M.row[i].get();		// entry object for tha argument old row's cursor data
 					if (row[i].get() != null && M.row[i].get() == null){
 						add.changeEntry(i, oldRow.getColumn(), oldRow.getEntry());
 						row[i].moveNext();
-						System.out.println("flag");
 					}
 					else if (row[i].get() == null && M.row[i].get() != null){
 						add.changeEntry(i, argOldRow.getColumn(), argOldRow.getEntry());
 						M.row[i].moveNext();
-						System.out.println("flag");
 					}
 					else if (oldRow.getColumn() == argOldRow.getColumn()){	// if both cursors have the same column
 						// newrow.append(e);						// append the entry to the temporary list object

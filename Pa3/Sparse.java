@@ -45,7 +45,7 @@ public class Sparse{
 		out.print(B.toString());
 		out.println("");
 
-		out.println("(1.5)*A =");
+		out.println("(1.5)*A = ");
 		out.print(A.scalarMult(1.5).toString());
 		out.println("");
 
@@ -53,19 +53,19 @@ public class Sparse{
 		out.print(A.add(B).toString());
 		out.println("");
 
-		out.println("A+A =");
+		out.println("A+A = ");
 		out.print(A.add(A).toString());
 		out.println("");
 
-		out.println("B-A =");
+		out.println("B-A = ");
 		out.print(B.sub(A).toString());
 		out.println("");
 
-		out.println("A-A =");
+		out.println("A-A = ");
 		out.print(A.sub(A).toString());
 		out.println("");
 
-		out.println("Transpose(A) =");
+		out.println("Transpose(A) = ");
 		out.print(A.transpose().toString());
 		out.println("");
 
