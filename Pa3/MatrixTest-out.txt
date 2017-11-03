@@ -11,33 +11,13 @@ transpose_getNNZ PASSED
 add_getNNZ PASSED
 sub_getNNZ PASSED
 scalarMult_getNNZ PASSED
-
-Unfortunately your program crashed on test mult_getNNZ With an exception of:
-
-java.lang.NullPointerException
-	at List$Node.access$400(List.java:343)
-	at List.delete(List.java:287)
-	at Matrix.changeEntry(Matrix.java:119)
-	at ModelMatrixTest.runTest(ModelMatrixTest.java:193)
-	at ModelMatrixTest.main(ModelMatrixTest.java:315)
-
-mult_getNNZ FAILED: due to exception
+mult_getNNZ PASSED
 Empty_equals PASSED
-
-Unfortunately your program crashed on test NonEmpty_equals With an exception of:
-
-java.lang.NullPointerException
-	at List$Node.access$400(List.java:343)
-	at List.delete(List.java:287)
-	at Matrix.changeEntry(Matrix.java:119)
-	at ModelMatrixTest.runTest(ModelMatrixTest.java:224)
-	at ModelMatrixTest.main(ModelMatrixTest.java:315)
-
-NonEmpty_equals FAILED: due to exception
+NonEmpty_equals PASSED
 Empty_toString PASSED
-NonEmpty_toString FAILED: in test 1
+NonEmpty_toString PASSED
 
-Passed 12 tests out of 15 possible
+Passed 15 tests out of 15 possible
 
-This gives you a score of 48 out of 60 for MatrixTest
+This gives you a score of 60 out of 60 for MatrixTest
 

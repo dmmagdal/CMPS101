@@ -262,7 +262,7 @@ public class Matrix{
 				}
 				else{
 					line = line.concat(i+": ");
-					line = line.concat(row[i].toString()+"\n");		// iterate through the lists and concatenate the string to the original line
+					line = line.concat(row[i].toString());		// iterate through the lists and concatenate the string to the original line
 				}
 			}
 		}

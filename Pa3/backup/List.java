@@ -283,7 +283,7 @@ public final class List{
 	public void delete(){
 		if (!isEmpty() && index >= 0){				// if the list isn't empty and the index is greater than or equal to zero
 			if (cursor.equals(front) && numItems > 1){	// if the cursor is at the front of the list and there is more than one item in the list
-				front = cursor.next;				// move the front to the next item in the list
+				front = front.next;				// move the front to the next item in the list
 				front.setPrev(null);				// set the front's previous pointer to null 
 			}
 			else if (cursor.equals(front) && front.equals(back)){	// if the cursor is at the front and there is only one item in the list
@@ -316,7 +316,12 @@ public final class List{
 		String s = "";											// string to hold the list
 		cursor = front;											// set the cursor to front
 		while (cursor != null){									// while the cursor is not null
-			s = s.concat(cursor.toString()+" ");				// concatenate the data to the string
+			if (cursor.equals(back)){
+				s = s.concat(cursor.toString()+"\n");
+			}
+			else{
+				s = s.concat(cursor.toString()+" ");				// concatenate the data to the string
+			}
 			cursor = cursor.next;								// increment the cursor
 		}
 		cursor = null;											// clear the cursor and reset the index

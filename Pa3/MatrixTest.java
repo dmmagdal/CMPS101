@@ -82,6 +82,5 @@ public class MatrixTest{
 		Matrix g = a.mult(e);															//
 		System.out.print(g.toString());
 		System.out.println("");
-		
 	}
 }
