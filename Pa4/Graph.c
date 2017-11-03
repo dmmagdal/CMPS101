@@ -140,10 +140,12 @@ void makeNull(Graph G){
 		exit(1);
 	}
 	else {
-		while (){
-
-			G->size--;
+		for (int i = 0; i <= getOrder(G); i++){
+			while (length(G->vertex[i]) != 0){
+				deleteFront(G->vertex[i]);
+			}
 		}
+		G->size = 0;
 	}
 }
 
@@ -156,7 +158,8 @@ void addEdge(Graph G, int u, int v){
 		exit(1);
 	}
 	else if (u >= 1 && u <= getOrder(G) && v >= 1 && v <= getOrder(G)){
-		
+		addArc(G, u, v);
+		addArc(G, v, u);
 		G->size++;
 	}
 }
@@ -171,7 +174,6 @@ void addArc(Graph G, int u, int v){
 	}
 	else if (u >= 1 && u <= getOrder(G) && v >= 1 && v <= getOrder(G)){
 		append(G->vertex[u], v);
-		G->size++;
 	}
 }
 
