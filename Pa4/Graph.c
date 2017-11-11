@@ -7,6 +7,9 @@
 #include "List.h"
 #include "Graph.h"
 
+#define NIL = -1;
+#define INF = 0;
+
 
 // structs
 
@@ -14,7 +17,10 @@
 typedef struct GraphObj{
 	int size;
 	int order;
-	List[size+1] vertex;
+	char* color;
+	int* d;
+	int* p;
+	List* vertex;
 } GraphObj;
 
 
@@ -26,8 +32,15 @@ Graph newGraph(int n){
 	Graph G = malloc(sizeof(GraphObj));
 	G->order = n;
 	G->size = 0;
+	G->color = (char*)malloc((n+1)*sizeof(char));
+	G->d = (int*)malloc((n+1)*sizeof(int));
+	G->p = (int*)malloc((n+1)*sizeof(int));
+	G->vertex = (List*)malloc((n+1)*sizeof(List));
 	for (int i = 1; i <= n; i++){
 		G->vertex[i] = newList();
+		G->color[i] = 'w';
+		G->d[i] = INF;
+		G->p[i] = NIL;
 	}
 	return(G)
 }
@@ -36,7 +49,7 @@ Graph newGraph(int n){
 // frees all dynamic memory associated with the Graph *pG and sets the handle *pG to NULL
 void freeGraph(Graph* pG){
 	if (pG != NULL && *pG != NULL){
-		for (int i = 0; i <= size; i++){
+		for (int i = 0; i <= getOrder(*pG); i++){
 			if (length(pG->vertex[i]) != 0){
 				clear(pG->vertex[i]);
 			}
@@ -58,7 +71,7 @@ int getOrder(Graph G){
 		fprintf(stderr, "Graph Error: Calling getOrder() on NULL Graph reference\n");
 		exit(1);
 	}
-	return(order);
+	return(G->order);
 }
 
 // getSize()
@@ -69,7 +82,7 @@ int getSize(Graph G){
 		fprintf(stderr, "Graph Error: Calling getSize() on NULL Graph reference\n");
 		exit(1);
 	}
-	return(size);
+	return(G->size);
 }
 
 // getSource()
@@ -81,7 +94,13 @@ int getSource(Graph G){
 		exit(1);
 	}
 	else if (u >= 1 && u <= getOrder(G)){
-
+		int source = NIL;
+		for (int i = 1; i <= getOrder(G); i++){
+			if (G->d[i] == 0){
+				source = G->d[i];
+			}
+		}
+		return(source);
 	}
 }
 
@@ -94,7 +113,7 @@ int getParent(Graph G, int u){
 		exit(1);
 	}
 	else if (u >= 1 && u <= getOrder(G)){
-
+		return(G->p[u]);
 	}
 }
 
@@ -107,7 +126,7 @@ int getDist(Graph G, int u){
 		exit(1);
 	}
 	else if (u >= 1 && u <= getOrder(G)){
-
+		return(G->d[u]);
 	}
 }
 
@@ -141,9 +160,7 @@ void makeNull(Graph G){
 	}
 	else {
 		for (int i = 0; i <= getOrder(G); i++){
-			while (length(G->vertex[i]) != 0){
-				deleteFront(G->vertex[i]);
-			}
+			clear(G->vertex[i]);
 		}
 		G->size = 0;
 	}
@@ -173,7 +190,22 @@ void addArc(Graph G, int u, int v){
 		exit(1);
 	}
 	else if (u >= 1 && u <= getOrder(G) && v >= 1 && v <= getOrder(G)){
-		append(G->vertex[u], v);
+		moveFront(G->vertex[u]);
+		while (index(G->vertex[u]) != length(G->vertex[u]) || index(G->vertex[u]) != -1){
+			if (v < get(G->vertex[u])){
+				insertBefore(G->vertex[u], v);
+				moveBack(G->vertex[]);
+				moveNext(G->vertex[]);
+			}
+			else if (v > get(G->vertex[u]) && index(G->vertex) == length(G->vertex[u])-1){
+				append(G->vertex, v);
+				moveBack(G->vertex[u]);
+				moveNext(G->vertex[u]);
+			}
+			else{
+				moveNext(G->vertex[u]);
+			}
+		}
 	}
 }
 
@@ -184,8 +216,36 @@ void BFS(Graph G, int s){
 		fprintf(stderr, "Graph Error: Calling BFS() on NULL Graph reference\n");
 		exit(1);
 	}
-	else{
-		
+	else if (s >= 1 && s <= getOrder(G)){
+		for (int u = 1; u <= getOrder(G); u++){
+			if (u == s){
+				continue;
+			}
+			else{
+				G->color[u] = 'w';
+				G->d[u] = INF;
+				G->p[u] = NIL;
+			}
+		}
+		G->color[s] = 'g';
+		G->d[s] = 0;
+		G->p[s] = NIL;
+		List L = newList();
+		append(L, s);
+		while (length(L) != 0){
+			int u = front(L);
+			deleteFront(L);
+			moveFront(G->vertex[u]);
+			while (index(G->vertex[u]) != length(G->vertex[u]))
+				int v = get(G->vertex[u]);
+				if (strcmp(G->color[v], 'w') == 0){
+					G->color[v] = 'g';
+					G->d[v]++;
+					G->p[v] = u;
+					append(L, v);
+				}
+			G->color[u] = 'b';
+		}
 	}
 }
 

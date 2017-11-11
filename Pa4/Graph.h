@@ -3,16 +3,15 @@
 
 #ifndef _GRAPH_H_INCLUDE_
 #define _GRAPH_H_INCLUDE_
-#define INF
-#define NIL
 
 // Exported type
+typedef struct GraphObj* Graph;
 
 
 // Constructor-Destructor
 
 // newGraph()
-// returns reference to new GraphObj representing a graphe with n vertices and no edges
+// returns reference to new GraphObj representing a graph with n vertices and no edges
 Graph newGraph(int n);
 
 // freeGraph()
