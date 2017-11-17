@@ -128,7 +128,7 @@ int getDist(Graph G, int u){
 		exit(1);
 	}
 	else if (u < 1 || u > getOrder(G)){
-		fprintf(stderr, "Graph Error: Using invalid target vertex in getDist()\n");
+		fprintf(stderr, "Graph Error: Using invalid target vertex in getParentDist()\n");
 		exit(1);
 	}
 	return(G->d[u]);

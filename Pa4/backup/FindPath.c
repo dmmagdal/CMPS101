@@ -11,7 +11,7 @@
 
 #define MAX_LEN 100
 
-int main(int argc, char *argv[]){
+int main(int argc, char *agrv[]){
 	// check command line for correct number of arguments
 	if (argc != 3){
 		fprintf(stderr, "Usage: %s <input file> <output file> \n", argv[0]);
@@ -42,17 +42,12 @@ int main(int argc, char *argv[]){
 	while (fgetc(in) != 0){
 		fscanf(in, "%d", &v1);
 		fscanf(in, "%d", &v2);
-		if (v1 == 0){
-			break;
-		}
-		else {
-			addEdge(G, v1, v2);
-		}
+		addEdge(G, v1, v2);
 	}
 
 	printGraph(out, G);
 
-	/*while (fgetc(in) != 0){
+	while (fgetc(in) != 0){
 		fscanf(in, "%d", &v1);
 		fscanf(in, "%d", &v2);
 		List path = newList();
@@ -62,7 +57,7 @@ int main(int argc, char *argv[]){
 		fprintf(out, "A shortest path %d-%d path is ", v1, v2);
 		printList(out, path);
 		fprintf(out, "\n");
-	}*/
+	}
 
 	// clean up te memory
 	makeNull(G);
