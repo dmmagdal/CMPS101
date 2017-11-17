@@ -11,7 +11,7 @@
 
 #define MAX_LEN 100
 
-int main(int argc, char *agrv[]){
+int main(int argc, char *argv[]){
 	// check command line for correct number of arguments
 	if (argc != 3){
 		fprintf(stderr, "Usage: %s <input file> <output file> \n", argv[0]);
@@ -42,7 +42,12 @@ int main(int argc, char *agrv[]){
 	while (fgetc(in) != 0){
 		fscanf(in, "%d", &v1);
 		fscanf(in, "%d", &v2);
-		addEdge(G, v1, v2);
+		if (v1 == 0){
+			break;
+		}
+		else {
+			addEdge(G, v1, v2);
+		}
 	}
 
 	printGraph(out, G);
@@ -50,13 +55,24 @@ int main(int argc, char *agrv[]){
 	while (fgetc(in) != 0){
 		fscanf(in, "%d", &v1);
 		fscanf(in, "%d", &v2);
-		List path = newList();
-		BFS(G, v1);
-		getPath(path, G, v2);
-		fprintf(out, "The distance from %d to %d is %d\n", v1, v2, getDist(G, v2));
-		fprintf(out, "A shortest path %d-%d path is ", v1, v2);
-		printList(out, path);
-		fprintf(out, "\n");
+		if (v1 == 0){
+			break;
+		}
+		else {
+			List path = newList();
+			BFS(G, v1);
+			getPath(path, G, v2);
+			if (getDist(G, v2) == INF){
+				fprintf(out, "The distance from %d to %d is infinity\n", v1, v2);
+				fprintf(out, "No %d-%d path exists\n", v1, v2);
+			}
+			else {
+				fprintf(out, "The distance from %d to %d is %d\n", v1, v2, getDist(G, v2));
+				fprintf(out, "A shortest %d-%d path is: ", v1, v2);
+				printList(out, path);
+			}
+			fprintf(out, "\n");
+		}	
 	}
 
 	// clean up te memory
