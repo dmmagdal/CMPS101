@@ -3,7 +3,7 @@
 
 #ifndef _GRAPH_H_INCLUDE_
 #define _GRAPH_H_INCLUDE_
-#define INF -1
+#define UNDEF -1
 #define NIL 0
 #include "List.h"
 

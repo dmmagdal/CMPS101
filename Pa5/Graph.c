@@ -14,8 +14,10 @@
 typedef struct GraphObj{
 	int size;
 	int order;
+	int time;
 	char* color;
 	int* d;
+	int* f;
 	int* p;
 	List* vertex;
 } GraphObj;
@@ -29,14 +31,17 @@ Graph newGraph(int n){
 	Graph G = malloc(sizeof(GraphObj));
 	G->order = n;
 	G->size = 0;
+	G->time = 0;
 	G->color = calloc((n+1), sizeof(char));
 	G->d = calloc((n+1), sizeof(int));
+	G->f = calloc((n+1), sizeof(int));
 	G->p = calloc((n+1), sizeof(int));
 	G->vertex = calloc((n+1), sizeof(List));
 	for (int i = 1; i <= n; i++){
 		G->vertex[i] = newList();
 		G->color[i] = 'w';
-		G->d[i] = INF;
+		G->d[i] = UNDEF;
+		G->f[i] = UNDEF;
 		G->p[i] = NIL;
 	}
 	return(G);
@@ -54,6 +59,7 @@ void freeGraph(Graph* pG){
 		}
 		free((*pG)->p);
 		free((*pG)->d);
+		free((*pG)->f);
 		free((*pG)->color);
 		free((*pG)->vertex);
 		free(*pG);
@@ -86,26 +92,8 @@ int getSize(Graph G){
 	return(G->size);
 }
 
-// getSource()
-// return the source vertex most recently used in BFS() or NIL if BFS has not yet been called
-// pre: none
-int getSource(Graph G){
-	if (G == NULL){
-		fprintf(stderr, "Graph Error: Calling getSource() on NULL Graph reference\n");
-		exit(1);
-	}
-	int source = NIL;
-	for (int i = 1; i <= getOrder(G); i++){
-		if (G->d[i] == 0){
-			source = i;
-			break;
-		}
-	}
-	return(source);
-}
-
 // getParent()
-// returns the distance from the most recent BFS source to vertex u or INF if BFS() has not yet been called
+// returns the distance from the most recent BFS source to vertex u or INF if DFS() has not yet been called
 // pre: 1 <= u <= getOrder(G)
 int getParent(Graph G, int u){
 	if (G == NULL){
@@ -119,10 +107,10 @@ int getParent(Graph G, int u){
 	return(G->p[u]);
 }
 
-// getDist()
-// returns the distance from the most recent BFS source to vertex u or INF if BFS() has not yet been called
+// getDiscovery()
+// returns the discovery time from the most recent DFS of vertex u or UNDEF if DFS() has not yet been called
 // pre: 1 <= u <= getOrder(G)
-int getDist(Graph G, int u){
+int getDiscovery(Graph G, int u){
 	if (G == NULL){
 		fprintf(stderr, "Graph Error: Calling getDist() on NULL Graph reference\n");
 		exit(1);
@@ -134,31 +122,19 @@ int getDist(Graph G, int u){
 	return(G->d[u]);
 }
 
-// getPath()
-// appends to the List L the vertices of the shortest path in G from source u or appends to L the value NIL if no such path exists
-// pre: getSource(G) != NIL, BFS() must be called before getPath()
-void getPath(List L, Graph G, int u){
-	if (L == NULL) {
-		fprintf(stderr, "Graph Error: Calling addEdge() on NULL List reference\n");
+// getFinish()
+// returns the finish time from the most recent DFS of vertex u or UNDEF if DFS() has not yet been called
+// pre: 1 <= u <= getOrder(G)
+int getDiscovery(Graph G, int u){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: Calling getFinish() on NULL Graph reference\n");
 		exit(1);
 	}
-	else if (G == NULL){
-		fprintf(stderr, "Graph Error: Calling getPath() on NULL Graph reference\n");
+	else if (u < 1 || u > getOrder(G)){
+		fprintf(stderr, "Graph Error: Using invalid target vertex in getFinish()\n");
 		exit(1);
 	}
-	else if (getSource(G) != NIL){
-		if (u == getSource(G)){
-			append(L, u);
-		}
-		else if (G->p[u] == NIL){
-			clear(L);
-			append(L, NIL);
-		}
-		else{
-			getPath(L, G, G->p[u]);
-			append(L, u);
-		}
-	}
+	return(G->f[u]);
 }
 
 
@@ -233,54 +209,94 @@ void addArc(Graph G, int u, int v){
 	}
 }
 
-// BFS()
-// runs breadth first search algorithm on the Graph G with source s, setting the color, distance, parent, and source fields of G to the file pointed to by out
-void BFS(Graph G, int s){
-	if (G == NULL){
-		fprintf(stderr, "Graph Error: Calling BFS() on NULL Graph reference\n");
+// DFS()
+// Runs depht first search algorithm to visit all possible nodes in the grap
+// pre: length(S) == getOrder(G)
+void DFS(Graph G, List S){
+	if (length(S) != getOrder(G)){
+		fprintf(stderr, "Graph Error: Calling DFS() on List of wrong size. List must be of same length as the graph's order\n");
 		exit(1);
 	}
-	else if (s >= 1 && s <= getOrder(G)){
-		for (int u = 1; u <= getOrder(G); u++){
-			if (u == s){
-				continue;
-			}
-			else{
-				G->color[u] = 'w';
-				G->d[u] = INF;
-				G->p[u] = NIL;
-			}
-		}
-		G->color[s] = 'g';
-		G->d[s] = 0;
-		G->p[s] = NIL;
-		List L = newList();
-		append(L, s);
-		while (length(L) != 0){
-			int u = front(L);
-			deleteFront(L);
-			if (length(G->vertex[u]) != 0){
-				moveFront(G->vertex[u]);
-				while (index(G->vertex[u]) != -1){
-					int v = get(G->vertex[u]);
-					if (G->color[v] == 'w'){
-						G->color[v] = 'g';
-						G->d[v] = G->d[u] + 1;
-						G->p[v] = u;
-						append(L, v);
-					}
-					moveNext(G->vertex[u]);
-				}
-			}
-			G->color[u] = 'b';
-		}
-		clear(L);
-		freeList(&L);
+	for (int i = 1; i <= getOrder(G); i++){
+		G->color[i] = 'w';
+		G-?p[i] = NIL;
 	}
+	G->time = 0;
+	moveFront(S);
+	while (getIndex(S) != -1){
+		if (color[j] == 'w'){
+			Visit(G, G->vertex[get(S)]);
+		}
+		moveNext(S);
+	}
+}
+
+// Visit()
+// executes the recursive visit() component of DFS
+// pre: none
+void Visit(Graph G, List S){
+	G->color[] = 'g';
+	G->d[] = ++G->time;
+	moveFront(S);
+	while (getIndex(D) != -1){
+		if (G->color[get(S)] == 'w'){
+			G->p[get(S)] = ;
+			Visit(G, G->vertex[get(S)]);
+		}
+		moveNext(S);
+	}
+	G->color[] = 'b';
+	G->f[] = ++G->time;
 }
 
 
 // Other Operations
+
+// transpose()
+// return a transpose of the graph G
+// pre: none
+Graph transpose(Graph G){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: Calling transpose() on NULL Graph reference\n");
+		exit(1);
+	}
+	else{
+		Graph trans = newGraph();
+		for (int i = 1; i <= getOrder(G); i++){
+			moveFront(G->vertex[i])
+			while (getIndex(G->vertex[i]) != -1){
+				//addEdge(trans, get(G->vertex[i]), i);
+				// 		OR
+				//addArc(trans, get(G->vertex[i]), i);
+				moveNext(G->vertex[i])
+			}
+		}
+	}
+	return (trans);
+}
+
+// copyGraph()
+// returns a copy of graph G
+// pre: none
+Graph copyGraph(Graph G){
+	if (G == NULL){
+		fprintf(stderr, "Graph Error: Calling copyGraph() on NULL Graph reference\n");
+		exit(1);
+	}
+	else{
+		Graph copy = newGraph();
+		for (int i = 1; i <= getOrder(G); i++){
+			moveFront(G->vertex[i])
+			while (getIndex(G->vertex[i]) != -1){
+				//addEdge(trans, i, get(G->vertex[i]));
+				// 		OR
+				//addArc(trans, i, get(G->vertex[i]));
+				moveNext(G->vertex[i])
+			}
+		}
+	}
+	return (copy);
+}
 
 // printGraph()
 // prints data elements in graph to out
