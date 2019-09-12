@@ -1,0 +1,11 @@
+Diego Magdaleno
+dmmagdal pa1
+
+List.java	List ADT made through a doubly linked list
+Lex.java	Client for List.java that takes input from a file and writes it in lexicographical 
+		order in another file
+ListTest.java	Client to test all the functions in List.java
+ListClient.java	Additional client used to test functions in List.java much like ListTest.java
+UndefinedCursroException.java		An exception to be thrown when performing an operation with
+					the cursor when it's undefined
+Makefile	Takes all relevent files and compiles them into .jar file called Lex
